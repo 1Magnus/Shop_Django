@@ -20,16 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from mainapp import views as mainapp
 
-
-
-
 urlpatterns = [
     path('', mainapp.index, name='index'),
     path('contact/', mainapp.contact, name='contact'),
     path('products/', include('mainapp.urls', namespace='products')),
-
-
-
 
     path('admin/', admin.site.urls),
 
