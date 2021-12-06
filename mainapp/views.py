@@ -27,7 +27,7 @@ def products(request, pk=None):
                 'pk': 0
             }
         else:
-            category_item = get_object_or_404(ProductCategory, pk)
+            category_item = get_object_or_404(ProductCategory, pk=pk)
             products_list = Product.objects.filter(category__pk=pk)
 
         context = {
