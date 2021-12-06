@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render, get_object_or_404
 from mainapp.models import Product, ProductCategory
 
@@ -36,9 +38,12 @@ def products(request, pk=None):
             'products': products_list
         }
         return render(request, 'mainapp/products_list.html', context=context)
-
+    hot_product = random.sample(list(Product.objects.all()), 1)[0]
+    same_products = Product.objects.all()[3:5]
     context = {
         'links_menu': links_menu,
-        'title': 'Продукты'
+        'title': 'Продукты',
+        'hot_product': hot_product,
+        'same_products': same_products
     }
     return render(request, 'mainapp/products.html', context=context)
