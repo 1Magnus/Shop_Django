@@ -21,4 +21,8 @@
     {% endif %}
 </ul>
 <a href="#" class="search"></a>
-<a href="{% url 'basket:basket' %}" class="basket"><span>{{ basket }}</span></a>
+<a href="{% url 'basket:basket' %}" class="basket"><span>
+    {% if basket %}
+        {{ basket.0.total_cost|floatformat:0 }} руб <br>
+    {% endif %}
+</span></a>
