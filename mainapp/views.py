@@ -69,3 +69,12 @@ def products(request, pk=None):
         'basket': get_basket(request.user)
     }
     return render(request, 'mainapp/products.html', context=context)
+
+def product(request, pk):
+    links_menu = ProductCategory.objects.all()
+    context = {
+        'product':get_object_or_404(Product, pk=pk),
+        'basket': get_basket(request.user),
+        'links_menu': links_menu
+    }
+    return render(request, 'mainapp/product.html', context)
