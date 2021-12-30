@@ -1,9 +1,10 @@
+from django.core.mail import send_mail
 from django.shortcuts import render
 from django.contrib import auth
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
-from authapp.forms import ShopUserLoginForm, ShopUserRegisterForms, ShopUsersEditForm
+from django.conf import settings
+from authapp.forms import ShopUserLoginForm, ShopUserRegisterForms, ShopUsersEditForm, ShopUser
 
 
 def login(request):
@@ -19,7 +20,7 @@ def login(request):
                 return HttpResponseRedirect(reverse(request.POST['next']))
             return HttpResponseRedirect(reverse('index'))
 
-    context = {'login_form': login_form, 'next':next_param}
+    context = {'login_form': login_form, 'next': next_param}
     return render(request, 'authapp/login.html', context)
 
 
@@ -35,7 +36,11 @@ def register(request):
         register_form = ShopUserRegisterForms(request.POST, request.FILES)
 
         if register_form.is_valid():
-            register_form.save()
+            user = register_form.save()
+            if send_verify_mail(user):
+                print('сообщение отправлено')
+            else:
+                print('сообщение не отправлено')
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         register_form = ShopUserRegisterForms()
@@ -58,5 +63,20 @@ def edit(request):
 
     return render(request, 'authapp/edit.html', content)
 
-def verify(request):
-    pass
+
+def verify(request, email, activation_key):
+    user = ShopUser.objects.filter(email=email).first()
+    if user:
+        if user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+        return render(request, 'authapp/verify.html')
+    return HttpResponseRedirect(reverse('index'))
+
+
+def send_verify_mail(user):
+    subject = 'Verify your account'
+    link = reverse("auth:verify", args=[user.email, user.activation_key])
+    message = f'{settings.DOMAIN}{link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)

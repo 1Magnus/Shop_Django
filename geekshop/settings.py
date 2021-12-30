@@ -76,7 +76,7 @@ AUTH_USER_MODEL = 'authapp.ShopUser'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DOMAIN_NAME = 'http://localhost:8000'
+DOMAIN = 'http://localhost:8000'
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
@@ -84,7 +84,8 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.filebses.EvailBackend'
+EMAIL_FILE_PATH = 'tmp/mails/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
