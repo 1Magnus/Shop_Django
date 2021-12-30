@@ -24,5 +24,13 @@ class Product(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10, default=0, verbose_name='цена')
     quantity = models.PositiveSmallIntegerField(default=0, verbose_name='количество')
     is_active = models.BooleanField(default=True)
+
     def __str__(self):
         return f'{self.name} {self.category.name}'
+
+    def delete(self):
+        if self.is_active:
+            self.is_active = False
+        else:
+            self.is_active = True
+        self.save()
